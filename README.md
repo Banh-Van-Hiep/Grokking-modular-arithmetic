@@ -1,6 +1,6 @@
 # Grokking Modular Arithmetic
 
-Nghiên cứu hiện tượng **Grokking** trong bài toán **Modular Arithmetic** sử dụng mô hình Transformer.
+Nghiên cứu hiện tượng Grokking trong bài toán Modular Arithmetic sử dụng mô hình Transformer.
 
 ## 1. Mục tiêu
 
@@ -11,7 +11,7 @@ Nghiên cứu hiện tượng **Grokking** trong bài toán **Modular Arithmetic
 
 ## 2. Mô hình
 
-Project sử dụng mô hình **GPT-2/Transformer** làm baseline để nghiên cứu hiện tượng Grokking trên bài toán Modular Arithmetic.
+Project sử dụng mô hình GPT-2/Transformer làm baseline để nghiên cứu hiện tượng Grokking trên bài toán Modular Arithmetic.
 
 Kiến trúc baseline hiện tại:
 
@@ -22,7 +22,7 @@ Kiến trúc baseline hiện tại:
 - Context length: `32`
 - Dropout: `0`
 - Optimizer: `AdamW`
-- Learning rate: `0.001`
+- Learning rate mặc định: `0.001`
 - Weight decay: `1.0`
 - Betas: `(0.9, 0.98)`
 - Gradient clipping: `1.0`
@@ -30,23 +30,35 @@ Kiến trúc baseline hiện tại:
 
 Các tham số như số layer, số attention head, learning rate và weight decay được thay đổi trong các thực nghiệm để khảo sát ảnh hưởng của chúng đến thời điểm Grokking.
 
-Mô hình được huấn luyện theo dạng language modeling nhưng loss được **mask**, chỉ tính loss tại vị trí kết quả ngay sau dấu `=`.
+Trong các thực nghiệm, learning rate được khảo sát ở các mức khác nhau, trong đó có `0.001` và `0.01`.
+
+Mô hình được huấn luyện theo dạng language modeling nhưng loss được mask, chỉ tính loss tại vị trí kết quả ngay sau dấu `=`.
 
 Ví dụ:
 
-    <SOS> N_12 * N_34 = N_25 <EOS>
+```text
+<SOS> N_12 * N_34 = N_14 <EOS>
+```
 
-Mô hình cần dự đoán token `N_25` từ biểu thức phía trước.
+Với `p = 197`:
+
+```text
+12 * 34 mod 197 = 14
+```
+
+Mô hình cần dự đoán token `N_14` từ biểu thức phía trước.
 
 ## 3. Dữ liệu
 
 ### 3.1. Nguồn dữ liệu
 
-Dữ liệu không lấy từ một dataset có sẵn mà được **sinh trực tiếp bằng chương trình** dựa trên phép toán Modular Arithmetic.
+Dữ liệu không lấy từ một dataset có sẵn mà được sinh trực tiếp bằng chương trình dựa trên phép toán Modular Arithmetic.
 
 Với phép nhân modulo:
 
-    y = (a * b) mod p
+```text
+y = (a * b) mod p
+```
 
 trong đó:
 
@@ -56,11 +68,15 @@ trong đó:
 
 Ví dụ với `p = 197`:
 
-    12 * 34 = 12 * 34 mod 197
+```text
+12 * 34 mod 197 = 14
+```
 
 Kết quả được chuyển thành dạng token:
 
-    <SOS> N_12 * N_34 = N_y <EOS>
+```text
+<SOS> N_12 * N_34 = N_14 <EOS>
+```
 
 ### 3.2. Các phép toán được hỗ trợ
 
@@ -73,13 +89,17 @@ Code hiện tại hỗ trợ:
 
 Các thực nghiệm hiện tại tập trung vào:
 
-    x * y mod p
+```text
+x * y mod p
+```
 
 ### 3.3. Cách sinh dữ liệu
 
 Với phép toán đối xứng như phép nhân, chương trình trước tiên tạo các cặp:
 
-    (a, b), với 0 <= a <= b < p
+```text
+(a, b), với 0 <= a <= b < p
+```
 
 Sau đó các cặp được xáo trộn ngẫu nhiên bằng seed cố định.
 
@@ -90,29 +110,37 @@ Tập dữ liệu được chia thành:
 
 Ví dụ:
 
-    p = 197
-    train_fraction = 0.3
+```text
+p = 197
+train_fraction = 0.3
+```
 
 Trong trường hợp này, khoảng 30% các cặp được sử dụng để train và phần còn lại được sử dụng để validation.
 
 Đối với phép toán đối xứng, nếu `a != b`, dữ liệu còn tạo thêm biểu thức đảo:
 
-    a * b = y
-    b * a = y
+```text
+a * b = y
+b * a = y
+```
 
 nhằm cung cấp cả hai thứ tự biểu diễn cho cùng một phép toán.
 
 ### 3.4. Đặc điểm và phạm vi dữ liệu
 
-Dữ liệu có tính chất **synthetic và exhaustive theo miền modulo được chọn**.
+Dữ liệu có tính chất synthetic và exhaustive theo miền modulo được chọn.
 
 Với một giá trị `p` cố định, các cặp số được xét trên toàn bộ miền:
 
-    {0, 1, ..., p-1}
+```text
+{0, 1, ..., p-1}
+```
 
 Đối với phép nhân, code sử dụng các cặp duy nhất:
 
-    (a, b), 0 <= a <= b < p
+```text
+(a, b), 0 <= a <= b < p
+```
 
 sau đó chia các cặp này thành train và validation.
 
@@ -120,28 +148,26 @@ Do đó, dữ liệu không phải dữ liệu thực tế mà là dữ liệu t
 
 ### 3.5. Chống Data Leakage
 
-Việc chia dữ liệu được thực hiện ở mức **cặp toán học `(a, b)`**, trước khi tạo các sample.
+Việc chia dữ liệu được thực hiện ở mức cặp toán học `(a, b)`, trước khi tạo các sample.
 
 Các cặp train và validation là hai tập riêng biệt:
 
-    train_pairs ∩ val_pairs = ∅
+```text
+train_pairs ∩ val_pairs = ∅
+```
 
 Điều này giúp tránh trường hợp cùng một cặp `(a, b)` xuất hiện đồng thời trong train và validation.
 
 Tuy nhiên, do bài toán Modular Arithmetic có cấu trúc toán học chung, các giá trị `a` và `b` riêng lẻ vẫn có thể xuất hiện ở cả train và validation.
 
-Vì vậy, validation hiện tại đánh giá khả năng mô hình **khái quát quy luật toán học sang các cặp chưa xuất hiện trong training**, chứ không phải khả năng tổng quát sang những số hoàn toàn chưa từng xuất hiện.
-
 ### 3.6. Train, Validation và Test
 
 Phiên bản hiện tại của project mới có:
 
-- **Training set:** dùng để tối ưu trọng số mô hình.
-- **Validation set:** dùng để theo dõi accuracy và xác định thời điểm Grokking.
+- Training set: dùng để tối ưu trọng số mô hình.
+- Validation set: dùng để theo dõi accuracy và xác định thời điểm Grokking.
 
-Hiện tại **chưa xây dựng một test set độc lập hoàn toàn** trong pipeline.
-
-Đây là một điểm cần bổ sung trong các thực nghiệm tiếp theo để có thể đánh giá mô hình trên một tập dữ liệu được giữ hoàn toàn độc lập với quá trình lựa chọn hyperparameter.
+Hiện tại chưa xây dựng một test set độc lập hoàn toàn trong pipeline.
 
 ## 4. Quy trình thực nghiệm
 
@@ -158,75 +184,11 @@ Quy trình thực nghiệm gồm các bước:
 9. Thay đổi các hyperparameter và lặp lại thực nghiệm.
 10. So sánh Grokking Step giữa các cấu hình.
 
-## 5. Phạm vi thực nghiệm hiện tại
+## 5. Kết quả thực nghiệm
 
-Các thực nghiệm ban đầu được thực hiện với:
+Các thực nghiệm được thực hiện bằng cách thay đổi cấu hình mô hình và hyperparameter, sau đó theo dõi Grokking Step – thời điểm validation accuracy đạt mức yêu cầu.
 
-- `p = 197`, train fraction `0.3`
-- `p = 383`, train fraction `0.15`
-
-Các hyperparameter được khảo sát gồm:
-
-- Số layer
-- Số attention head
-- Weight decay
-- Learning rate
-
-Kết quả chi tiết được lưu trong thư mục `results/`.
-
-## 6. Kết quả ban đầu
-
-Với `p = 197` và train fraction `0.3`, baseline:
-
-- Layer: `2`
-- Hidden: `128`
-- Weight decay: `1`
-- Head: `4`
-- Learning rate: `0.01`
-
-đạt Grokking tại step `2600`.
-
-Khi thay đổi weight decay, thời điểm Grokking thay đổi đáng kể. Một số cấu hình Grokking nhanh hơn, trong khi một số cấu hình không đạt Grokking trong phạm vi thực nghiệm.
-
-Ví dụ:
-
-- Weight decay `2`: Grokking step `1200`
-- Weight decay `1.5`: Grokking step `1300`
-- Weight decay `0.5`: Grokking step `3200`
-- Weight decay `0.1`: Không Grokking
-- Weight decay `10`: Chưa/không Grokking
-
-Với `p = 383` và train fraction `0.15`, baseline:
-
-- Layer: `2`
-- Hidden: `128`
-- Weight decay: `1`
-- Head: `4`
-- Learning rate: `0.001`
-
-đạt Grokking tại step `34300`.
-
-Các kết quả này cho thấy thời điểm Grokking phụ thuộc đáng kể vào cấu hình mô hình, hyperparameter và phạm vi dữ liệu.
-
-## 7. Những điểm còn thiếu
-
-Phiên bản hiện tại vẫn còn một số điểm cần tiếp tục hoàn thiện:
-
-- Xây dựng **test set độc lập** với validation set.
-- Thực hiện nhiều seed để kiểm tra độ ổn định của kết quả.
-- Mở rộng phạm vi các giá trị `p`.
-- Khảo sát hệ thống hơn ảnh hưởng của train fraction.
-- Khảo sát đầy đủ hơn ảnh hưởng của model size.
-- Phân tích representation của model trước và sau Grokking.
-- Phân tích Fourier representation.
-- So sánh kết quả giữa các phép toán Modular Arithmetic khác nhau.
-- Lưu checkpoint và kết quả của từng lần chạy theo cấu hình.
-
-## 4. Thực nghiệm
-
-Các thực nghiệm được thực hiện bằng cách thay đổi cấu hình mô hình và hyperparameter, sau đó theo dõi **Grokking Step** – thời điểm validation accuracy đạt mức yêu cầu.
-
-### Thực nghiệm với p = 197
+### 5.1. Thực nghiệm với p = 197
 
 Train fraction: `0.3`
 
@@ -246,7 +208,7 @@ Một số cấu hình:
 
 Các cấu hình tương tự cũng được chạy với learning rate `0.001`.
 
-### Thực nghiệm với p = 383
+### 5.2. Thực nghiệm với p = 383
 
 Train fraction: `0.15`
 
@@ -259,51 +221,77 @@ Baseline:
 - Learning rate: `0.001`
 - Grokking Step: `34300`
 
-## 5. Kết quả ban đầu
+### 5.3. Đánh giá ban đầu
 
 Các thực nghiệm cho thấy thời điểm Grokking thay đổi đáng kể khi thay đổi cấu hình mô hình và hyperparameter.
 
-Đặc biệt, **weight decay có ảnh hưởng rõ rệt đến thời điểm Grokking**. Với một số giá trị weight decay, mô hình Grokking nhanh hơn; trong khi một số cấu hình không đạt Grokking trong thời gian thực nghiệm.
+Đặc biệt, weight decay có ảnh hưởng rõ rệt đến thời điểm Grokking. Với một số giá trị weight decay, mô hình Grokking nhanh hơn; trong khi một số cấu hình không đạt Grokking trong thời gian thực nghiệm.
 
-Ví dụ với `p = 197`, Grokking Step thay đổi từ khoảng `1200` đến `3200` tùy cấu hình, và một số cấu hình chưa xảy ra Grokking. 
+Ví dụ với `p = 197`, Grokking Step thay đổi từ khoảng `1200` đến `3200` tùy cấu hình, và một số cấu hình chưa xảy ra Grokking.
 
 Kết quả với `p = 383` cho thấy baseline đạt Grokking ở step `34300`.
 
 Các kết quả này là cơ sở để tiếp tục nghiên cứu cơ chế Grokking và sự thay đổi representation của mô hình.
 
-## 6. Cấu trúc project
+## 6. Những điểm còn thiếu
 
-    Grokking-modular-arithmetic/
-    ├── configs/
-    │   └── config.py
-    ├── src/
-    │   ├── data.py
-    │   ├── model.py
-    │   ├── train.py
-    │   └── evaluate.py
-    ├── experiments/
-    │   └── multiplication.py
-    ├── notebooks/
-    ├── results/
-    ├── README.md
-    ├── TODO.md
-    └── requirements.txt
+Phiên bản hiện tại vẫn còn một số điểm cần tiếp tục hoàn thiện:
 
-## 7. Cài đặt
+- Xây dựng test set độc lập với validation set.
+- Thực hiện nhiều seed để kiểm tra độ ổn định của kết quả.
+- Mở rộng phạm vi các giá trị `p`.
+- Khảo sát hệ thống hơn ảnh hưởng của train fraction.
+- Khảo sát đầy đủ hơn ảnh hưởng của model size.
+- Phân tích representation của model trước và sau Grokking.
+- Phân tích Fourier representation.
+- So sánh kết quả giữa các phép toán Modular Arithmetic khác nhau.
+- Lưu checkpoint và kết quả của từng lần chạy theo cấu hình.
 
-    pip install -r requirements.txt
+## 7. Cấu trúc project
 
-## 8. Chạy thực nghiệm
+```text
+Grokking-modular-arithmetic/
+
+├── configs/
+│   └── config.py
+├── src/
+│   ├── data.py
+│   ├── model.py
+│   ├── train.py
+│   └── evaluate.py
+├── experiments/
+│   └── multiplication.py
+├── notebooks/
+├── results/
+├── .gitignore
+├── README.md
+├── TODO.md
+└── requirements.txt
+```
+
+## 8. Cài đặt
+
+Cài đặt các thư viện cần thiết bằng lệnh:
+
+```bash
+pip install -r requirements.txt
+```
+
+## 9. Chạy thực nghiệm
 
 Từ thư mục gốc của project:
 
-    python -m experiments.multiplication
+```bash
+python -m experiments.multiplication
+```
 
 Các tham số thực nghiệm có thể được điều chỉnh trong:
 
-    configs/config.py
+```text
+configs/config.py
+```
 
-## 9. Hướng phát triển
+## 10. Hướng phát triển
 
 - Phân tích representation trước và sau Grokking.
 - Nghiên cứu Fourier representation.
