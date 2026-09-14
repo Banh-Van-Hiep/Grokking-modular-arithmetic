@@ -1,37 +1,31 @@
 # TODO
 
-## Week 1 - Project Setup
+## Tuần 1 - Thiết lập dự án
+- [x] Tạo repository GitHub
+- [x] Tạo cấu trúc project
+- [x] Thêm README.md
+- [x] Thêm TODO.md
 
-- [x] Create GitHub repository
-- [x] Create project structure
-- [x] Add README.md
-- [x] Add TODO.md
+## Dữ liệu
+- [x] Xây dựng bộ dữ liệu modular arithmetic
+- [x] Chia dữ liệu train/validation
+- [x] Kiểm tra data leakage
 
-## Data
+## Mô hình
+- [x] Xây dựng Transformer baseline
+- [x] Xây dựng cấu hình mô hình
 
-- [ ] Implement modular arithmetic dataset
-- [ ] Implement train/validation/test split
-- [ ] Check data distribution
+## Huấn luyện
+- [x] Xây dựng training loop
+- [x] Đánh giá validation
+- [x] Lưu kết quả thực nghiệm
 
-## Model
+## Thực nghiệm
+- [x] Chạy thực nghiệm Grokking baseline
+- [x] Khảo sát hành vi Grokking
+- [x] Thử nghiệm các cấu hình mô hình
 
-- [ ] Implement baseline Transformer
-- [ ] Implement model configuration
-
-## Training
-
-- [ ] Implement training loop
-- [ ] Add validation
-- [ ] Save training results
-
-## Experiments
-
-- [ ] Reproduce baseline grokking experiment
-- [ ] Investigate grokking behavior
-- [ ] Analyze model representations
-
-## Analysis
-
-- [ ] Analyze representations before grokking
-- [ ] Analyze representations after grokking
-- [ ] Investigate Fourier representations
+## Phân tích
+- [ ] Phân tích representation trước/sau Grokking
+- [ ] Phân tích Fourier representation
+- [ ] Phân tích kết quả thực nghiệm
