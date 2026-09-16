@@ -186,8 +186,7 @@ Quy trình thực nghiệm gồm các bước:
 
 ## 5. Kết quả thực nghiệm
 
-Các thực nghiệm được thực hiện bằng cách thay đổi cấu hình mô hình và hyperparameter, sau đó theo dõi Grokking Step – thời điểm validation accuracy đạt mức yêu cầu.
-Các hình ảnh kết quả đầy đủ được lưu trong thư mục results/.
+Các thực nghiệm được thực hiện bằng cách thay đổi cấu hình mô hình và hyperparameter, sau đó theo dõi Grokking Step – thời điểm validation accuracy đạt mức yêu cầu. Các hình ảnh kết quả đầy đủ được lưu tại thư mục [results/](results/).
 
 ### 5.1. Thực nghiệm với p = 197
 
