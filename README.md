@@ -187,6 +187,7 @@ Quy trình thực nghiệm gồm các bước:
 ## 5. Kết quả thực nghiệm
 
 Các thực nghiệm được thực hiện bằng cách thay đổi cấu hình mô hình và hyperparameter, sau đó theo dõi Grokking Step – thời điểm validation accuracy đạt mức yêu cầu.
+Các hình ảnh kết quả đầy đủ được lưu trong thư mục results/.
 
 ### 5.1. Thực nghiệm với p = 197
 
@@ -225,7 +226,7 @@ Baseline:
 
 Các thực nghiệm cho thấy thời điểm Grokking thay đổi đáng kể khi thay đổi cấu hình mô hình và hyperparameter.
 
-Đặc biệt, weight decay có ảnh hưởng rõ rệt đến thời điểm Grokking. Với một số giá trị weight decay, mô hình Grokking nhanh hơn; trong khi một số cấu hình không đạt Grokking trong thời gian thực nghiệm.
+Các kết quả ban đầu cho thấy thời điểm Grokking thay đổi khi thay đổi weight decay trong các cấu hình được khảo sát.
 
 Ví dụ với `p = 197`, Grokking Step thay đổi từ khoảng `1200` đến `3200` tùy cấu hình, và một số cấu hình chưa xảy ra Grokking.
 
@@ -245,7 +246,6 @@ Phiên bản hiện tại vẫn còn một số điểm cần tiếp tục hoàn
 - Phân tích representation của model trước và sau Grokking.
 - Phân tích Fourier representation.
 - So sánh kết quả giữa các phép toán Modular Arithmetic khác nhau.
-- Lưu checkpoint và kết quả của từng lần chạy theo cấu hình.
 
 ## 7. Cấu trúc project
 
