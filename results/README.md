@@ -10,7 +10,7 @@ Thiết lập:
 
 * Modulus: `p = 197`
 * Train fraction: `0.3`
-* Tổng số bước: `25.000`
+* Tổng số bước: `100.000`
 * Learning rate: `0.001`
 
 | Ảnh                 | Cấu hình | Số lớp | Chiều ẩn | Weight Decay | Số Head | Learning Rate | Grokking Step |
@@ -71,7 +71,7 @@ Thiết lập:
 
 * Modulus: `p = 383`
 * Train fraction: `0.15`
-* Tổng số bước: `25.000`
+* Tổng số bước: `100.000`
 * Learning rate: `0.001`
 * Cấu hình: baseline
 

@@ -30,7 +30,7 @@ Kiến trúc baseline hiện tại:
 
 Các tham số như số layer, số attention head, learning rate và weight decay được thay đổi trong các thực nghiệm để khảo sát ảnh hưởng của chúng đến thời điểm Grokking.
 
-Trong các thực nghiệm, learning rate được khảo sát ở các mức khác nhau, trong đó có `0.001` và `0.01`.
+Trong các thực nghiệm, learning rate được khảo sát ở các mức `0.001`.
 
 Mô hình được huấn luyện theo dạng language modeling nhưng loss được mask, chỉ tính loss tại vị trí kết quả ngay sau dấu `=`.
 
