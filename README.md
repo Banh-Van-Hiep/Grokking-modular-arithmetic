@@ -196,15 +196,15 @@ Một số cấu hình:
 
 | Cấu hình | Layer | Hidden | Weight Decay | Head | Learning Rate | Grokking Step |
 |----------|------:|-------:|-------------:|-----:|--------------:|--------------:|
-| Base | 2 | 128 | 1 | 4 | 0.01 | 2600 |
-| Scale | 4 | 128 | 1 | 4 | 0.01 | 2200 |
-| Scale | 2 | 128 | 1 | 8 | 0.01 | 2600 |
-| Scale | 2 | 128 | 0.5 | 4 | 0.01 | 3200 |
-| Scale | 2 | 128 | 1.5 | 4 | 0.01 | 1300 |
-| Scale | 2 | 128 | 0.1 | 4 | 0.01 | Không Grokking |
-| Scale | 2 | 128 | 2 | 4 | 0.01 | 1200 |
-| Scale | 2 | 128 | 5 | 4 | 0.01 | 1600 |
-| Scale | 2 | 128 | 10 | 4 | 0.01 | Chưa Grokking |
+| Base | 2 | 128 | 1 | 4 | 0.001 | 2600 |
+| Scale | 4 | 128 | 1 | 4 | 0.001 | 2200 |
+| Scale | 2 | 128 | 1 | 8 | 0.001 | 2600 |
+| Scale | 2 | 128 | 0.5 | 4 | 0.001 | 3200 |
+| Scale | 2 | 128 | 1.5 | 4 | 0.001 | 1300 |
+| Scale | 2 | 128 | 0.1 | 4 | 0.001 | Không Grokking |
+| Scale | 2 | 128 | 2 | 4 | 0.001 | 1200 |
+| Scale | 2 | 128 | 5 | 4 | 0.001 | 1600 |
+| Scale | 2 | 128 | 10 | 4 | 0.001 | Chưa Grokking |
 
 Các cấu hình tương tự cũng được chạy với learning rate `0.001`.
 
@@ -239,11 +239,8 @@ Phiên bản hiện tại vẫn còn một số điểm cần tiếp tục hoàn
 
 - Xây dựng test set độc lập với validation set.
 - Thực hiện nhiều seed để kiểm tra độ ổn định của kết quả.
-- Mở rộng phạm vi các giá trị `p`.
-- Khảo sát hệ thống hơn ảnh hưởng của train fraction.
-- Khảo sát đầy đủ hơn ảnh hưởng của model size.
+- Mở rộng phạm vi các giá trị `p`, và các tham số model
 - Phân tích representation của model trước và sau Grokking.
-- Phân tích Fourier representation.
 - So sánh kết quả giữa các phép toán Modular Arithmetic khác nhau.
 
 ## 7. Cấu trúc project
