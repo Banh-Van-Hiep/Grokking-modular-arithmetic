@@ -18,3 +18,4 @@ def create_model(vocab_size, sos_id, eos_id, pad_id, device):
     )
 
     return GPT2LMHeadModel(config).to(device)
+    

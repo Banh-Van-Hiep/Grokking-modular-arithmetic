@@ -60,3 +60,4 @@ class FixedDataset(Dataset):
 
     def __getitem__(self, idx):
         return self.data[idx]
+    

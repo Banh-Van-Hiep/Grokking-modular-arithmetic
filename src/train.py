@@ -52,3 +52,4 @@ def train_model(model, train_loader, val_loader, optimizer, scheduler, total_ste
             if step >= total_steps:
                 print("\nĐã đạt số step tối đa nhưng chưa Grokking hoàn toàn.")
                 return step
+            
