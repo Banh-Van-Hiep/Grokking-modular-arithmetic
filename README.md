@@ -465,7 +465,7 @@ Trong quá trình huấn luyện, các task được lấy theo các rectangle �
 Mô hình được đánh giá trên 4 điều kiện:
 
 | Condition | Rules | Inputs |
-|----------|-------|--------|
+|---|---|---|
 | `S_train_id` | Train | Train |
 | `S_test_id` | Train | Test |
 | `S_train_ood` | Test | Train |
@@ -552,234 +552,32 @@ Quy trình thực nghiệm gồm các bước:
 
 Các thực nghiệm được thực hiện bằng cách thay đổi từng hyperparameter trong khi giữ các tham số còn lại theo baseline.
 
-Các hình ảnh và file kết quả chi tiết được lưu tại:
+Các nhóm tham số được khảo sát gồm:
 
-[results/icl/](results/icl/)
+- Weight Decay
+- Learning Rate
+- Embedding Dimension
+- Số Layer
+- Modulo `P`
 
-### 17.1. Baseline
+Kết quả chi tiết, bảng thống kê và hình ảnh của từng thực nghiệm được lưu tại:
 
-Cấu hình baseline:
+[results/README.md](results/README.md)
 
-| Tham số | Giá trị |
-|---------|---------|
-| `P` | `17` |
-| `rule_frac` | `0.8` |
-| `input_frac` | `0.8` |
-| Layers | `2` |
-| Embedding | `128` |
-| Heads | `4` |
-| Context | `32` |
-| Learning rate | `1.5e-4` |
-| Weight decay | `2.0` |
-| Training steps | `80000` |
-| Seed | `42` |
-
-Kết quả baseline:
-
-[Baseline](results/icl/baseline.png)
-
-Các metric chính được theo dõi:
-
-- `S_train_id` late accuracy
-- `S_train_ood` late accuracy
-- `S_test_ood` late accuracy
-- `S_test_ood` accuracy tại `0-shot`
-- `S_test_ood` accuracy tại `31-shot`
-- Best step
-
-`Best step` là training step tại đó `S_test_ood` late accuracy đạt giá trị cao nhất trong quá trình đánh giá.
-
-### 17.2. Thực nghiệm với Weight Decay
-
-Baseline:
-
-```text
-wd = 2.0
-```
-
-Các cấu hình được khảo sát:
-
-```text
-wd = 1.0
-wd = 3.0
-```
-
-Kết quả:
-
-| Cấu hình | Weight Decay | Best Step | `S_train_id` Late | `S_train_ood` Late | `S_test_ood` Late |
-|----------|-------------:|----------:|------------------:|-------------------:|------------------:|
-| WD 1 | `1.0` | `54000` | `45.35%` | `29.28%` | `11.57%` |
-| WD 3 | `3.0` | `70000` | `25.16%` | `17.04%` | `14.31%` |
-
-Kết quả chi tiết:
-
-- [Weight Decay = 1](results/icl/wd1.png)
-- [Weight Decay = 3](results/icl/wd3.png)
-
-### 17.3. Thực nghiệm với Learning Rate
-
-Baseline:
-
-```text
-lr = 1.5e-4
-```
-
-Các cấu hình được khảo sát:
-
-```text
-lr = 1e-4
-lr = 3e-4
-```
-
-Kết quả:
-
-| Cấu hình | Learning Rate | Best Step | `S_train_id` Late | `S_train_ood` Late | `S_test_ood` Late |
-|----------|--------------:|----------:|------------------:|-------------------:|------------------:|
-| LR 1e-4 | `0.0001` | `27000` | `29.31%` | `19.17%` | `14.22%` |
-| LR 3e-4 | `0.0003` | `22500` | `61.94%` | `55.93%` | `20.17%` |
-
-Kết quả chi tiết:
-
-- [Learning Rate = 1e-4](results/icl/lr1e-4.png)
-- [Learning Rate = 3e-4](results/icl/lr3e-4.png)
-
-### 17.4. Thực nghiệm với Embedding Dimension
-
-Baseline:
-
-```text
-embd = 128
-```
-
-Các cấu hình được khảo sát:
-
-```text
-embd = 64
-embd = 256
-```
-
-Kết quả:
-
-| Cấu hình | Embedding | Best Step | `S_train_id` Late | `S_train_ood` Late | `S_test_ood` Late |
-|----------|----------:|----------:|------------------:|-------------------:|------------------:|
-| Embd 64 | `64` | `54500` | `20.95%` | `15.52%` | `10.71%` |
-| Embd 256 | `256` | `10000` | `59.57%` | `53.50%` | `27.39%` |
-
-Kết quả chi tiết:
-
-- [Embedding = 64](results/icl/embd64.png)
-- [Embedding = 256](results/icl/embd256.png)
-
-### 17.5. Thực nghiệm với số Layer
-
-Baseline:
-
-```text
-layers = 2
-```
-
-Các cấu hình được khảo sát:
-
-```text
-layers = 4
-layers = 6
-```
-
-Kết quả:
-
-| Cấu hình | Layers | Best Step | `S_train_id` Late | `S_train_ood` Late | `S_test_ood` Late |
-|----------|-------:|----------:|------------------:|-------------------:|------------------:|
-| Layers 4 | `4` | `63000` | `97.39%` | `91.64%` | `88.90%` |
-| Layers 6 | `6` | `61500` | `97.78%` | `94.25%` | `89.75%` |
-
-Kết quả chi tiết:
-
-- [Layers = 4](results/icl/layers4.png)
-- [Layers = 6](results/icl/layers6.png)
-
-### 17.6. Thực nghiệm với modulo P
-
-Baseline:
-
-```text
-P = 17
-```
-
-Thực nghiệm mở rộng:
-
-```text
-P = 29
-```
-
-Kết quả:
-
-| Tham số | Giá trị |
-|---------|--------:|
-| `P` | `29` |
-| Layers | `2` |
-| Embedding | `128` |
-| Context | `32` |
-| Rule fraction | `0.8` |
-| Input fraction | `0.8` |
-| Learning rate | `1.5e-4` |
-| Weight decay | `2.0` |
-| Best Step | `34500` |
-| `S_train_id` Late | `4.16%` |
-| `S_train_ood` Late | `2.05%` |
-| `S_test_ood` Late | `3.56%` |
-| Chance | `3.4%` |
-| Steps done | `53500` |
-| Status | `stuck_stop` |
-
-Kết quả chi tiết:
-
-[P = 29](results/icl/P29.png)
+Các kết quả được sử dụng để phân tích sự thay đổi của accuracy theo số lượng shots và sự khác biệt giữa các điều kiện `S_train_id`, `S_test_id`, `S_train_ood` và `S_test_ood`.
 
 ## 18. Đánh giá ban đầu
 
-Các thực nghiệm cho thấy accuracy thay đổi theo số lượng examples trong context ở nhiều cấu hình.
+Các thực nghiệm bước đầu cho thấy accuracy thay đổi theo số lượng examples trong context ở nhiều cấu hình.
 
 Đối với `P = 17`, một số cấu hình cho thấy accuracy trên `S_test_ood` tăng khi số lượng shots tăng.
 
-Với `embd = 256`, accuracy `S_test_ood` tăng từ:
+Mức độ thay đổi của accuracy khác nhau giữa các cấu hình về learning rate, embedding dimension và số layer.
 
-```text
-5.27% ở 0-shot
-```
+Các kết quả cũng cho thấy độ khó của bài toán thay đổi khi thay đổi modulo `P`. Với `P = 29`, accuracy trên `S_test_ood` vẫn gần mức chance trong các mức shots được đánh giá.
 
-lên:
+Các kết quả chi tiết được trình bày trong [results/README.md](results/README.md).
 
-```text
-28.12% ở 31-shot
-```
-
-Với `layers = 4`, accuracy `S_test_ood` tăng từ:
-
-```text
-5.86% ở 0-shot
-```
-
-lên:
-
-```text
-92.58% ở 31-shot
-```
-
-Với `layers = 6`, accuracy `S_test_ood` tăng từ:
-
-```text
-7.03% ở 0-shot
-```
-
-lên:
-
-```text
-93.36% ở 31-shot
-```
-
-Đối với `P = 29`, accuracy `S_test_ood` vẫn gần mức chance `3.4%` ở các mức shots được đánh giá.
-
-Các kết quả cho thấy khả năng sử dụng thông tin trong context thay đổi theo cấu hình mô hình, hyperparameter và modulo `P`.
 
 ## 19. Cấu trúc project
 
@@ -807,18 +605,20 @@ Grokking-modular-arithmetic/
 │
 ├── notebooks/
 ├── results/
+│   ├── README.md
+│   ├── image1.png
+│   ├── image2.png
 │   ├── ...
-│   └── icl/
-│       ├── baseline.png
-│       ├── wd1.png
-│       ├── wd3.png
-│       ├── lr1e-4.png
-│       ├── lr3e-4.png
-│       ├── embd64.png
-│       ├── embd256.png
-│       ├── layers4.png
-│       ├── layers6.png
-│       └── P29.png
+│   ├── Baseline.png
+│   ├── wd1.png
+│   ├── wd3.png
+│   ├── lr1e-4.png
+│   ├── lr3e-4.png
+│   ├── embd64.png
+│   ├── embd256.png
+│   ├── layers4.png
+│   ├── layers6.png
+│   └── P29.png
 │
 ├── .gitignore
 ├── README.md
